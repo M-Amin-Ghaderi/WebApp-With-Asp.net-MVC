@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication1.Models.Tbl_Users>
+﻿@model IEnumerable<WebApplication1.Models.User>
 
 @{
     ViewBag.Title = "لیست کاربران";
@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tbl_Roles.Role_Name)
+                @Html.DisplayNameFor(model => model.Role.Role_Name)
             </th>
             <th></th>
         </tr>
@@ -39,7 +39,7 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Tbl_Roles.Role_Title)
+                    @Html.DisplayFor(modelItem => item.Role.Role_Title)
                 </td>
                 <td>
                     @Html.ActionLink("ویرایش", "Edit", new { id = item.Id }, new { @class = "btn btn-warning text-white" }) |

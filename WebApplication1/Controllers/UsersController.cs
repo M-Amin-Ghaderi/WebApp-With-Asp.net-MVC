@@ -5,16 +5,17 @@ using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Models;
 using System.Net;
+using WebApplication1.Context;
 
 namespace WebApplication1.Controllers
 {
     public class UsersController : Controller
     {
-        Db_WebApp1Entities2 db = new Db_WebApp1Entities2();
+        WebAppDbContext db = new WebAppDbContext();
         // GET: Users
         public ActionResult Index()
         {
-            var usersList = db.Tbl_Users.ToList();
+            var usersList = db.Users.ToList();
             return View(usersList);
         }
 
@@ -25,14 +26,14 @@ namespace WebApplication1.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Name,Family,Phone,password,Email")] Tbl_Users user)
+        public ActionResult Create([Bind(Include = "Name,Family,Phone,password,Email")] User user)
         {
             if (ModelState.IsValid)
             {
                 user.Register_date = DateTime.Now;
                 user.IsActive = true;
                 user.UserRole_Id = 3;
-                db.Tbl_Users.Add(user);
+                db.Users.Add(user);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -55,7 +56,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var user = db.Tbl_Users.Find(id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -74,7 +75,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var user = db.Tbl_Users.Find(id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -82,7 +83,7 @@ namespace WebApplication1.Controllers
             return View(user);
         }
         [HttpPost]
-        public ActionResult Edit([Bind(Include = "Id,Name,Family,Phone,password,Email,Register_date,gender,IsActive,UserRole_Id")] Tbl_Users user)
+        public ActionResult Edit([Bind(Include = "Id,Name,Family,Phone,password,Email,Register_date,gender,IsActive,UserRole_Id")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +105,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var user = db.Tbl_Users.Find(id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -118,12 +119,12 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var user = db.Tbl_Users.Find(id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
             }
-            db.Tbl_Users.Remove(user);
+            db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -7,21 +7,22 @@ using System.IO;
 using WebApplication1.Models;
 using System.Net;
 using System.Data.Entity;
+using WebApplication1.Context;
 
 namespace WebApplication1.Controllers
 {
     public class ProductsController : Controller
     {
-        Db_WebApp1Entities2 db = new Db_WebApp1Entities2();
+        WebAppDbContext db = new WebAppDbContext();
         public ActionResult Index()
         {
-            var products = db.Tbl_Products.ToList();
+            var products = db.Products.ToList();
             return View(products);
         }
 
         public ActionResult PV_Index()
         {
-            var products = db.Tbl_Products.ToList();
+            var products = db.Products.ToList();
             return PartialView(products);
         }
 
@@ -34,13 +35,13 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = db.Tbl_Products.Find(Id);
+            var product = db.Products.Find(Id);
             if (product == null)
             {
                 return HttpNotFound();
             }
-            var user = db.Tbl_Users.Find(product.Product_UserId);
-            ViewBag.User = user.Tbl_Roles.Role_Title;
+            var user = db.Users.Find(product.Product_UserId);
+            ViewBag.User = user.Role.Role_Title;
             return View(product);
         }
 
@@ -58,7 +59,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = db.Tbl_Products.Find(Id);
+            var product = db.Products.Find(Id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -67,7 +68,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit([Bind(Include = "Id,Product_Name, Product_Details, Product_Price,Product_UserId,Product_Image")] Tbl_Products product, HttpPostedFileBase Product_Image)
+        public ActionResult Edit([Bind(Include = "Id,Product_Name, Product_Details, Product_Price,Product_UserId,Product_Image")] Product product, HttpPostedFileBase Product_Image)
         {
             if (ModelState.IsValid)
             {
@@ -117,7 +118,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Product_Name, Product_Details, Product_Price")] Tbl_Products product, HttpPostedFileBase Product_Image)
+        public ActionResult Create([Bind(Include = "Product_Name, Product_Details, Product_Price")] Product product, HttpPostedFileBase Product_Image)
         {
             if (ModelState.IsValid)
             {
@@ -141,7 +142,7 @@ namespace WebApplication1.Controllers
                 }
                 product.Product_Image = newImage;
                 product.Product_UserId = 1;
-                db.Tbl_Products.Add(product);
+                db.Products.Add(product);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Products");
             }
@@ -159,7 +160,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = db.Tbl_Products.Find(id);
+            var product = db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
@@ -174,14 +175,14 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var product = db.Tbl_Products.Find(id);
+            var product = db.Products.Find(id);
             if (product == null)
             {
                 return HttpNotFound();
             }
             if (product != null)
             {
-                db.Tbl_Products.Remove(product);
+                db.Products.Remove(product);
                 db.SaveChanges();
                 if (product.Product_Image != "default_Product")
                 {
